@@ -1,0 +1,24 @@
+{
+  "name": "database_updater",
+  "version": "1.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.26.0",
+    "cluster": "^0.7.7",
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "nodemon": "^2.0.15",
+    "sequelize": "^6.16.1",
+    "tedious": "^14.3.0",
+    "yarn": "^1.22.17"
+  }
+}
