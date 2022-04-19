@@ -1,35 +1,39 @@
 const Sequelize = require("sequelize");
 
-module.exports = class tbWidgetVersion_dynamic {
+module.exports = class tbStoreConnection_dynamic {
   constructor(class_connection) {
     this.table = class_connection.sequelize.define(
-      "tbWidgetVersion",
+      "tbStoreProceduresVersion",
       {
         // attributes
         name: {
           type: Sequelize.STRING,
           primaryKey: true,
         },
-        xml: {
-          type: Sequelize.STRING("MAX"),
+        code: {
+          type: Sequelize.TEXT,
+        },
+        version : {
+          type: Sequelize.STRING,
+          primaryKey: true,
+        },
+        isDeleted: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
         },
         UpdateBy: {
           type: Sequelize.INTEGER,
           defaultValue: 0,
         },
-        version : {
-          type: Sequelize.STRING,
-          primaryKey: true,
-        }
       },
       {
         freezeTableName: true,
-        // timestamps: false,
       }
     );
   }
 
-  async createTable(force = false) {
-    await this.table.sync({ force });
+  async createTable() {
+    await this.table.sync({ force: false });
   }
 };

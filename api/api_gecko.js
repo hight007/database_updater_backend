@@ -2,6 +2,7 @@ const express = require("express");
 const constant = require("../util/constants");
 const router = express.Router();
 const { Sequelize, DataTypes, Op } = require("sequelize");
+const { QueryTypes } = require("sequelize");
 const _ = require("lodash");
 
 //import models
@@ -200,9 +201,10 @@ router.patch("/tbWidget", async (req, res) => {
       return;
     }
 
-    let create_widget_list = [];
-    let update_widget_list = [];
-    let error_widget_list = [];
+    let patch_result = [];
+    let create_list = [];
+    let update_list = [];
+    let error_list = [];
 
     let i = 0;
 
@@ -218,22 +220,25 @@ router.patch("/tbWidget", async (req, res) => {
           await target_tbWidget.table.update(item, {
             where: { name: item.name },
           });
-          update_widget_list.push(item.name);
+          update_list.push(item.name);
+          patch_result.push({ name: item.name, status: "update" });
         } else {
           await target_tbWidget.table.create(item);
-          create_widget_list.push(item.name);
+          create_list.push(item.name);
+          patch_result.push({ name: item.name, status: "create" });
         }
       } catch (error) {
-        error_widget_list.push(item.name);
+        error_list.push(item.name);
+        patch_result.push({ name: item.name, status: "error" });
       } finally {
         i++;
         if (i >= result_widget_version.length) {
           res.json({
-            api_result:
-              error_widget_list.length > 0 ? constant.nok : constant.ok,
-            create_widget_list,
-            update_widget_list,
-            error_widget_list,
+            api_result: error_list.length > 0 ? constant.nok : constant.ok,
+            create_list,
+            update_list,
+            error_list,
+            patch_result,
           });
         }
       }
@@ -427,9 +432,9 @@ router.patch("/tbFilter", async (req, res) => {
       return;
     }
 
-    let create_filter_list = [];
-    let update_filter_list = [];
-    let error_filter_list = [];
+    let create_list = [];
+    let update_list = [];
+    let error_list = [];
 
     let i = 0;
 
@@ -445,23 +450,22 @@ router.patch("/tbFilter", async (req, res) => {
           await target_tbFilter.table.update(item, {
             where: { name: item.name },
           });
-          update_filter_list.push(item.name);
+          update_list.push(item.name);
         } else {
           await target_tbFilter.table.create(item);
-          create_filter_list.push(item.name);
+          create_list.push(item.name);
         }
       } catch (error) {
         console.log(error);
-        error_filter_list.push(item.name);
+        error_list.push(item.name);
       } finally {
         i++;
         if (i >= result_filter_version.length) {
           res.json({
-            api_result:
-              error_filter_list.length > 0 ? constant.nok : constant.ok,
-            create_filter_list,
-            update_filter_list,
-            error_filter_list,
+            api_result: error_list.length > 0 ? constant.nok : constant.ok,
+            create_list,
+            update_list,
+            error_list,
           });
         }
       }
@@ -650,9 +654,9 @@ router.patch("/tbDashboard", async (req, res) => {
       return;
     }
 
-    let create_dashboard_list = [];
-    let update_dashboard_list = [];
-    let error_dashboard_list = [];
+    let create_list = [];
+    let update_list = [];
+    let error_list = [];
 
     let i = 0;
 
@@ -668,22 +672,21 @@ router.patch("/tbDashboard", async (req, res) => {
           await target_tbdashboard.table.update(item, {
             where: { name: item.name },
           });
-          update_dashboard_list.push(item.name);
+          update_list.push(item.name);
         } else {
           await target_tbdashboard.table.create(item);
-          create_dashboard_list.push(item.name);
+          create_list.push(item.name);
         }
       } catch (error) {
-        error_dashboard_list.push(item.name);
+        error_list.push(item.name);
       } finally {
         i++;
         if (i >= result_dashboard_version.length) {
           res.json({
-            api_result:
-              error_dashboard_list.length > 0 ? constant.nok : constant.ok,
-            create_dashboard_list,
-            update_dashboard_list,
-            error_dashboard_list,
+            api_result: error_list.length > 0 ? constant.nok : constant.ok,
+            create_list,
+            update_list,
+            error_list,
           });
         }
       }
@@ -863,6 +866,7 @@ router.patch("/tbDatasource", async (req, res) => {
 
     const Tbdatasource_version = new tbDatasourceVersion_dynamic(vision_db);
     const target_tbdatasource = new tbDatasource_dynamic(target_vision_db);
+    
     await target_tbdatasource.createTable();
 
     const result_datasource_version = await Tbdatasource_version.table.findAll({
@@ -885,9 +889,42 @@ router.patch("/tbDatasource", async (req, res) => {
       return;
     }
 
-    let create_datasource_list = [];
-    let update_datasource_list = [];
-    let error_datasource_list = [];
+    let create_list = [];
+    let update_list = [];
+    let error_list = [];
+
+    const ems = await target_tbdatasource.table.sequelize.query(
+      `SELECT [appID]
+    FROM [dbo].[tbApps]
+    where name like '%ems%'`,
+      { type: QueryTypes.SELECT }
+    );
+
+    const checkPermissionMantis = async (name, DataSourceID) => {
+      for (let index = 0; index < ems.length; index++) {
+        const appID = ems[index].appID;
+        const tbDatasourceApp = await target_tbdatasource.table.sequelize.query(
+          `SELECT [datasourceAppId]
+          FROM [dbo].[tbDatasourceApp]
+          where [appId] = ${appID} and [DataSourceID] = ${DataSourceID}`,
+          { type: QueryTypes.SELECT }
+        );
+        console.log(tbDatasourceApp.length);
+        if (tbDatasourceApp.length == 0) {
+          await target_tbdatasource.table.sequelize.query(
+            `INSERT INTO [dbo].[tbDatasourceApp]
+            ([datasourceName]
+            ,[appId]
+            ,[DataSourceID])
+      VALUES
+            ('${name}'
+            ,${appID}
+            ,${DataSourceID}) `,
+            { type: QueryTypes.INSERT }
+          );
+        }
+      }
+    };
 
     let i = 0;
 
@@ -903,22 +940,31 @@ router.patch("/tbDatasource", async (req, res) => {
           await target_tbdatasource.table.update(item, {
             where: { name: item.name },
           });
-          update_datasource_list.push(item.name);
+
+          const select_result = await target_tbdatasource.table.findOne({
+            where: { name: item.name },
+            attributes: ["DataSourceID"],
+          });
+          checkPermissionMantis(item.name, select_result.DataSourceID);
+
+          update_list.push(item.name);
         } else {
-          await target_tbdatasource.table.create(item);
-          create_datasource_list.push(item.name);
+          const create_result = await target_tbdatasource.table.create(item);
+          checkPermissionMantis(item.name, create_result.DataSourceID);
+
+          create_list.push(item.name);
         }
       } catch (error) {
-        error_datasource_list.push(item.name);
+        console.log(error);
+        error_list.push(item.name);
       } finally {
         i++;
         if (i >= result_datasource_version.length) {
           res.json({
-            api_result:
-              error_datasource_list.length > 0 ? constant.nok : constant.ok,
-            create_datasource_list,
-            update_datasource_list,
-            error_datasource_list,
+            api_result: error_list.length > 0 ? constant.nok : constant.ok,
+            create_list,
+            update_list,
+            error_list,
           });
         }
       }
@@ -990,6 +1036,7 @@ router.delete("/tbGeckoItemNameList", async (req, res) => {
 
     const tbGeckoItemNameList = new tbGeckoItemNameList_dynamic(vision_db);
 
+    console.log(name, " ", type);
     const result_remove_GeckoItemNameList =
       await tbGeckoItemNameList.table.destroy({
         where: {

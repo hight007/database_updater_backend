@@ -11,6 +11,8 @@ app.use(cors());
 
 //api require module
 app.use("/api/gecko/", require("./api/api_gecko"));
+app.use("/api/storeConnection/", require("./api/api_store_connection"));
+app.use("/api/storeProcedures/", require("./api/api_store_procedures"));
 
 // use cluster
 // use_cluster(false, 2010, app);

@@ -10,9 +10,12 @@ module.exports = class tbStoreConnection_dynamic {
           type: Sequelize.STRING,
           primaryKey: true,
         },
-        connection_string_encrypt: {
+        connection_type: {
           type: Sequelize.STRING,
           primaryKey: true,
+        },
+        connection_string_encrypt: {
+          type: Sequelize.STRING,
         },
         isDeleted: {
           type: Sequelize.BOOLEAN,
@@ -21,6 +24,7 @@ module.exports = class tbStoreConnection_dynamic {
         },
         UpdateBy: {
           type: Sequelize.INTEGER,
+          defaultValue: 0,
         },
       },
       {

@@ -14,6 +14,7 @@ module.exports = class tbFilterVersion_dynamic {
         },
         UpdateBy: {
           type: Sequelize.INTEGER,
+          defaultValue: 0,
         },
         filterId: {
           type: Sequelize.INTEGER,

@@ -15,6 +15,7 @@ module.exports = class tbWidget_dynamic {
         },
         UpdateBy: {
           type: Sequelize.INTEGER,
+          defaultValue: 0,
         },
       },
       {
