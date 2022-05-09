@@ -4,7 +4,7 @@ module.exports = class tbStoreConnection_dynamic {
   constructor(class_connection) {
     this.table = class_connection.sequelize.define(
       "tbStoreConnection",
-      {
+      { 
         // attributes
         connection_name: {
           type: Sequelize.STRING,

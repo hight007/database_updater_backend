@@ -1,8 +1,8 @@
 const express = require("express");
 const constant = require("../util/constants");
 const router = express.Router();
-const { Sequelize, DataTypes, Op } = require("sequelize");
-const { QueryTypes } = require("sequelize");
+
+const { Sequelize, QueryTypes , Op } = require("sequelize");
 const _ = require("lodash");
 
 //import models
@@ -866,7 +866,7 @@ router.patch("/tbDatasource", async (req, res) => {
 
     const Tbdatasource_version = new tbDatasourceVersion_dynamic(vision_db);
     const target_tbdatasource = new tbDatasource_dynamic(target_vision_db);
-    
+
     await target_tbdatasource.createTable();
 
     const result_datasource_version = await Tbdatasource_version.table.findAll({
@@ -972,6 +972,7 @@ router.patch("/tbDatasource", async (req, res) => {
 
     // res.json(result_datasource_version);
   } catch (error) {
+    console.log(error);
     res.json({ api_result: constant.nok, error: error.message });
   }
 });

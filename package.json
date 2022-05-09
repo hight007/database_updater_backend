@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.26.0",
+    "bcrypt": "^5.0.1",
     "cluster": "^0.7.7",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
@@ -18,7 +19,9 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "nodemon": "^2.0.15",
-    "sequelize": "^6.16.1",
+    "pg": "^8.7.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.19.0",
     "tedious": "^14.3.0",
     "yarn": "^1.22.17"
   }

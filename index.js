@@ -15,8 +15,8 @@ app.use("/api/storeConnection/", require("./api/api_store_connection"));
 app.use("/api/storeProcedures/", require("./api/api_store_procedures"));
 
 // use cluster
-// use_cluster(false, 2010, app);
+use_cluster(true, 2010, app);
 
-app.listen(port, () => {
-  console.log(`Backend is running port : ${port} ...`);
-});
+// app.listen(port, () => {
+//   console.log(`Backend is running port : ${port} ...`);
+// });
