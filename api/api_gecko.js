@@ -19,7 +19,7 @@ const tbFilterVersion_dynamic = require("../database/models/tbFilterVersion_dyna
 const tbDashboard_dynamic = require("../database/models/tbDashBoard_dynamic");
 const tbDashBoardVersion_dynamic = require("../database/models/tbDashBoardVersion_dynamic");
 
-const tbDatasource_dynamic = require("../database/models/tbDatasource_dynamic");
+const tbDatasource_dynamic = require("../database/models/tbDatasource_dynamic_mantis");
 const tbDatasourceVersion_dynamic = require("../database/models/tbDatasourceVersion_dynamic");
 
 //widget_version
