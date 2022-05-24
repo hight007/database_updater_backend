@@ -128,7 +128,7 @@ router.post("/storeProcedures", async (req, res) => {
     const sp_list = await store_procedures_db.sequelize.query(
       `select routine_name as name 
       from information_schema.routines  
-      where routine_name in ('fnGetStockIdForReportPortal') or routine_name like 'spReport%'`,
+      where routine_name in ('fnGetStockIdForReportPortal' , 'fnGetBlockId' , 'fnGetBlockId2') or routine_name like 'spReport%'`,
       {
         type: QueryTypes.SELECT,
       }

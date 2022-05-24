@@ -16,13 +16,17 @@
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "express": "^4.17.2",
+    "fs": "^0.0.1-security",
+    "js2xml": "^1.0.9",
     "jsonwebtoken": "^8.5.1",
+    "jstoxml": "^3.2.3",
     "lodash": "^4.17.21",
     "nodemon": "^2.0.15",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.19.0",
     "tedious": "^14.3.0",
+    "xml2js": "^0.4.23",
     "yarn": "^1.22.17"
   }
 }

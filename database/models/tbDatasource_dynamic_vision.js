@@ -21,6 +21,10 @@ module.exports = class tbDatasource_dynamic {
           type: Sequelize.TEXT,
           allowNull: false,
         },
+        externalConnectionsId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+        },
         connectionProviderId: {
           type: Sequelize.INTEGER,
           allowNull: false,
