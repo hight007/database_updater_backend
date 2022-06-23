@@ -183,7 +183,7 @@ router.patch("/tbDatasource", async (req, res) => {
             where: { name: exConName },
           });
         exCon.datasource.connection[0].$.name =
-          result_exCon.externalConnectionsId
+          result_exCon != null
             ? result_exCon.externalConnectionsId
             : 1;
 
@@ -199,9 +199,10 @@ router.patch("/tbDatasource", async (req, res) => {
           name: item.name,
           xml,
           connectionProviderId: 1,
-          externalConnectionsId: result_exCon.externalConnectionsId
-            ? result_exCon.externalConnectionsId
-            : 1,
+          externalConnectionsId:
+            result_exCon != null
+              ? result_exCon.externalConnectionsId
+              : 1,
           createdBy: 0,
           createdDateTime: moment().toDate(),
           updatedBy: null,
@@ -212,7 +213,10 @@ router.patch("/tbDatasource", async (req, res) => {
         dataToVision_success.push(vision_result);
         original_success_data.push(item);
       } catch (error) {
-        dataToVision_failed.push({ item, error });
+        dataToVision_failed.push({
+          item,
+          error: { errors: JSON.stringify(error) },
+        });
         console.log(error);
       } finally {
         i++;

@@ -33,7 +33,7 @@ router.get("/connection", async (req, res) => {
       item.connection_string_encrypt = decryptedData;
     }
 
-    res.json({ result,  api_result: constant.ok });
+    res.json({ result, api_result: constant.ok });
   } catch (error) {
     console.log(error);
     res.json({ error: error, api_result: constant.nok });
@@ -63,6 +63,33 @@ router.post("/connection", async (req, res) => {
     };
     await tbStoreConnection.createTable();
     const result = await tbStoreConnection.table.create(data);
+
+    res.json({ result, api_result: constant.ok });
+  } catch (error) {
+    res.json({ error: error, api_result: constant.nok });
+  }
+});
+
+router.delete("/connection", async (req, res) => {
+  try {
+    const { connection_name, connection_type } = req.body;
+
+    console.log('Delete start');
+    
+    const vision_db = new dynamic_connection(
+      "clsmessp20dev.database.windows.net",
+      "clsmdb-cth-vision-qa03_Copy",
+      "cthadmin",
+      "CLS0DC2k3"
+    );
+    const tbStoreConnection = new tbStoreConnection_dynamic(vision_db);
+    await tbStoreConnection.createTable();
+    const result = await tbStoreConnection.table.destroy({
+      where: {
+        connection_name,
+        connection_type,
+      },
+    });
 
     res.json({ result, api_result: constant.ok });
   } catch (error) {

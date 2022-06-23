@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const constant = require("../util/constants");
-const { Sequelize, QueryTypes , Op } = require("sequelize");
+const { Sequelize, QueryTypes, Op } = require("sequelize");
 const fs = require("fs");
 const _ = require("lodash");
 
@@ -188,7 +188,7 @@ router.post("/storeProcedures", async (req, res) => {
     res.json({ error: error, api_result: constant.nok });
   }
 });
- 
+
 router.delete("/storeProcedures/", async (req, res) => {
   const { version } = req.body;
   try {
@@ -211,8 +211,136 @@ router.delete("/storeProcedures/", async (req, res) => {
   }
 });
 
-router.patch("/storeProcedures", async (req, res) => {
-  
+router.patch("/storeProcedures", async (req, res) => {});
+
+router.get("/stringMatching/:text", async (req, res) => {
+  try {
+    const { text } = req.params;
+    let inCludeText = [];
+    let inCludeTextDetail = [];
+    const store_procedures_db = new dynamic_connection(
+      "clsmessp20dev.database.windows.net",
+      "clsmdb-cth-ibm-prd01-temp",
+      "cthadmin",
+      "CLS0DC2k3"
+    );
+    const sp_list = await store_procedures_db.sequelize.query(
+      `select routine_name as name 
+      from information_schema.routines  
+      where routine_name in ('fnGetStockIdForReportPortal' , 'fnGetBlockId' , 'fnGetBlockId2') or routine_name like 'spReport%'`,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    for (let index = 0; index < sp_list.length; index++) {
+      const sp_name = sp_list[index].name;
+      try {
+        const result = await store_procedures_db.sequelize.query(
+          `EXEC sp_helptext N'${sp_name}';`,
+          {
+            type: QueryTypes.SELECT,
+          }
+        );
+
+        let store_code = "";
+        for (let index = 0; index < result.length; index++) {
+          const item = result[index];
+          store_code += item.Text;
+        }
+        store_code.trim();
+        store_code = store_code.replace(/[\r]+/g, "\r");
+        store_code = store_code.replace(/[\n]+/g, "\n");
+        store_code = store_code.replace(/[\t]+/g, "\t");
+        store_code = store_code.toUpperCase();
+
+        if (store_code.includes(text.toUpperCase())) {
+          console.log(sp_name);
+          inCludeText.push(sp_name);
+          inCludeTextDetail.push({ store_code, sp_name });
+        }
+      } catch (error) {
+        // error_list.push(sp_name);
+        console.log(error);
+      }
+    }
+    console.log("-------------------------------");
+    res.json({ isIncludeText: inCludeText });
+    // res.json(sp_list);
+  } catch (error) {}
+});
+
+router.get("/tableIncludes/", async (req, res) => {
+  try {
+    let inCludeTbList = [];
+    const store_procedures_db = new dynamic_connection(
+      "clsmessp20dev.database.windows.net",
+      "clsmdb-cth-ibm-prd01-temp",
+      "cthadmin",
+      "CLS0DC2k3"
+    );
+    const sp_list = await store_procedures_db.sequelize.query(
+      `select routine_name as name 
+      from information_schema.routines  
+      where routine_name in ('fnGetStockIdForReportPortal' , 'fnGetBlockId' , 'fnGetBlockId2') or routine_name like 'spReport%'`,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    for (let index = 0; index < sp_list.length; index++) {
+      const sp_name = sp_list[index].name;
+      try {
+        const result = await store_procedures_db.sequelize.query(
+          `EXEC sp_helptext N'${sp_name}';`,
+          {
+            type: QueryTypes.SELECT,
+          }
+        );
+
+        let store_code = "";
+        for (let index = 0; index < result.length; index++) {
+          const item = result[index];
+          store_code += item.Text;
+        }
+        store_code.trim();
+        store_code = store_code.replace(/[\r]+/g, "\r");
+        store_code = store_code.replace(/[\n]+/g, "\n");
+        store_code = store_code.replace(/[\t]+/g, "\t");
+        store_code = store_code.toUpperCase();
+
+        // console.log(store_code);
+        const store_code_wording_list = store_code.split(" ");
+        let inCludeTb = [];
+        for (let w = 0; w < store_code_wording_list.length; w++) {
+          const word = store_code_wording_list[w];
+          if (word.includes("tb".toUpperCase()) && !word.includes("@")) {
+            let clearnWord = word.toLowerCase();
+            clearnWord = clearnWord.replace("\ta", "");
+            clearnWord = clearnWord.replace("\n", "");
+            clearnWord = clearnWord.replace("\r", "");
+            clearnWord = clearnWord.replace("\t", "");
+            clearnWord = clearnWord.replace("from", "");
+            clearnWord = clearnWord.replace("[dbo]", "");
+            clearnWord = clearnWord.replace("]", "");
+            clearnWord = clearnWord.replace("[", "");
+            inCludeTb.push(clearnWord);
+          }
+        }
+
+        inCludeTb = _.uniq(inCludeTb);
+        console.log(sp_name, inCludeTb);
+
+        inCludeTbList.push({ sp_name, inCludeTb });
+      } catch (error) {
+        // error_list.push(sp_name);
+        console.log(error);
+      }
+    }
+    console.log("-------------------------------");
+    res.json(inCludeTbList);
+    // res.json(sp_list);
+  } catch (error) {}
 });
 
 module.exports = router;
