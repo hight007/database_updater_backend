@@ -56,7 +56,7 @@ router.patch("/tbExternalConnections", async (req, res) => {
     const vision_tb = new tbExternalConnections_vision(connection_vision);
 
     //create table
-    await vision_tb.createTable(forceCreateTable ? forceCreateTable : false);
+    // await vision_tb.createTable(forceCreateTable ? forceCreateTable : false);
 
     //get mantis data
     const mantis_result = await mantis_tb.table.findAll();
@@ -131,10 +131,8 @@ router.patch("/tbDatasource", async (req, res) => {
     // await vision_tb.createTable(forceCreateTable ? forceCreateTable : false);
 
     try {
-      const dropTableQuery = `DROP TABLE [dbo].[tbDatasource];`;
+      // const dropTableQuery = `DROP TABLE [dbo].[tbDatasource];`;
       await vision_tb.table.sequelize.query(`
-    ${forceCreateTable == true ? dropTableQuery : ""}
-
     CREATE TABLE [dbo].[tbDatasource](
         [datasourceId] [int] IDENTITY(1,1) NOT NULL,
         [name] [nvarchar](255) NOT NULL,

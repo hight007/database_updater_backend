@@ -9,8 +9,17 @@ module.exports = class dynamic_connection {
       dialectOptions: {
         options: {
           instanceName: "",
-        },
+          requestTimeout: 60000000,
+          connectTimeout: 60000000
+        },  
+      },
+      pool: {
+        max: 10, 
+        min: 0,
+        acquire: 12000000,
+        idle: 1200000,
+        evict: 12000000, 
       },
     });
   }
-};
+}; 

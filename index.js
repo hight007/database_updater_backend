@@ -5,7 +5,7 @@ const port = 2010;
 
 const app = express();
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
@@ -14,6 +14,7 @@ app.use("/api/gecko/", require("./api/api_gecko"));
 app.use("/api/storeConnection/", require("./api/api_store_connection"));
 app.use("/api/storeProcedures/", require("./api/api_store_procedures"));
 app.use("/api/migration/", require("./api/api_migration"));
+app.use("/api/oracle_migration/", require("./api/api_oracle_migration"));
 
 // use cluster
 use_cluster(false, 2010, app);
@@ -21,3 +22,4 @@ use_cluster(false, 2010, app);
 // app.listen(port, () => {
 //   console.log(`Backend is running port : ${port} ...`);
 // });
+ 
