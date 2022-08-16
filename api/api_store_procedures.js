@@ -504,6 +504,33 @@ router.get("/storeProceduresUpdate/", async (req, res) => {
   }
 });
 
+router.delete("/storeProceduresUpdate/", async (req, res) => {
+  try {
+    const { name, version } = req.body;
+    const vision_db = new dynamic_connection(
+      "clsmessp20dev.database.windows.net",
+      "clsmdb-cth-vision-qa03_Copy",
+      "cthadmin",
+      "CLS0DC2k3"
+    );
+    const tbStoreProcedures_update = new tbStoreProceduresUpdate_dynamic(
+      vision_db
+    );
+
+    const result = await tbStoreProcedures_update.table.destroy({
+      where: {
+        name,
+        version,
+      },
+    });
+
+    res.json({ result, api_result: constant.ok });
+  } catch (error) {
+    console.log(error);
+    res.json({ error: error, api_result: constant.nok });
+  }
+});
+
 router.get("/compareStoreProceduresWithLastVersion/", async (req, res) => {
   try {
     const vision_db = new dynamic_connection(
