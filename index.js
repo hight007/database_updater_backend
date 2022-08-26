@@ -15,6 +15,7 @@ app.use("/api/storeConnection/", require("./api/api_store_connection"));
 app.use("/api/storeProcedures/", require("./api/api_store_procedures"));
 app.use("/api/migration/", require("./api/api_migration"));
 app.use("/api/oracle_migration/", require("./api/api_oracle_migration"));
+app.use("/api/analytics/", require("./api/api_analytics"));
 
 // use cluster
 use_cluster(false, 2010, app);

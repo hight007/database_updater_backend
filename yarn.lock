@@ -1187,7 +1187,7 @@
   dependencies:
     "whatwg-url" "^5.0.0"
 
-"nodemon@^2.0.15":
+"nodemon@^2.0.19":
   "integrity" "sha512-4pv1f2bMDj0Eeg/MhGqxrtveeQ5/G/UVe9iO6uTZzjnRluSA4PVWf8CW99LUPwGB3eNIA7zUFoP77YuI7hOc0A=="
   "resolved" "https://registry.npmjs.org/nodemon/-/nodemon-2.0.19.tgz"
   "version" "2.0.19"

@@ -5,7 +5,6 @@ const constant = require("../util/constants");
 const { Sequelize, DataTypes, Op } = require("sequelize");
 
 const _ = require("lodash");
-const secretKey = "C31e$t!c@";
 var CryptoJS = require("crypto-js");
 
 //models
@@ -27,10 +26,14 @@ router.get("/connection", async (req, res) => {
       const item = result[index];
       const bytes = CryptoJS.AES.decrypt(
         item.connection_string_encrypt,
-        secretKey
+        constant.secretKey
       );
       const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
       item.connection_string_encrypt = decryptedData;
+      item.connection_string_encrypt.password = CryptoJS.AES.encrypt(
+        item.connection_string_encrypt.password,
+        constant.secretKey
+      ).toString();
     }
 
     res.json({ result, api_result: constant.ok });
@@ -46,7 +49,7 @@ router.post("/connection", async (req, res) => {
 
     const connection_string_encrypt = CryptoJS.AES.encrypt(
       JSON.stringify(connection_string),
-      secretKey
+      constant.secretKey
     ).toString();
 
     const vision_db = new dynamic_connection(
@@ -74,8 +77,8 @@ router.delete("/connection", async (req, res) => {
   try {
     const { connection_name, connection_type } = req.body;
 
-    console.log('Delete start');
-    
+    console.log("Delete start");
+
     const vision_db = new dynamic_connection(
       "clsmessp20dev.database.windows.net",
       "clsmdb-cth-vision-qa03_Copy",

@@ -22,7 +22,7 @@
     "jsonwebtoken": "^8.5.1",
     "jstoxml": "^3.2.3",
     "lodash": "^4.17.21",
-    "nodemon": "^2.0.15",
+    "nodemon": "^2.0.19",
     "oracledb": "^5.4.0",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",

@@ -184,7 +184,13 @@ router.post("/storeProcedures", async (req, res) => {
     const sp_list = await store_procedures_db.sequelize.query(
       `select routine_name as name 
       from information_schema.routines  
-      where routine_name in ('fnGetStockIdForReportPortal' , 'fnGetBlockId' , 'fnGetBlockId2' , 'fnGetValidSNStatus') or routine_name like 'spReport%'`,
+      where routine_name in ('fnGetStockIdForReportPortal' , 'fnGetBlockId' , 'fnGetBlockId2' , 'fnGetValidSNStatus') or routine_name like 'spReport%'
+      union all
+      SELECT 
+        v.name
+      FROM 
+        sys.views as v
+          where name like 'spReport%'`,
       {
         type: QueryTypes.SELECT,
       }
@@ -283,7 +289,13 @@ router.get("/stringMatching/:text", async (req, res) => {
     const sp_list = await store_procedures_db.sequelize.query(
       `select routine_name as name 
       from information_schema.routines  
-      where routine_name in ('fnGetStockIdForReportPortal' , 'fnGetBlockId' , 'fnGetBlockId2') or routine_name like 'spReport%'`,
+      where routine_name in ('fnGetStockIdForReportPortal' , 'fnGetBlockId' , 'fnGetBlockId2') or routine_name like 'spReport%'
+      union all
+      SELECT 
+        v.name
+      FROM 
+        sys.views as v
+          where name like 'spReport%'`,
       {
         type: QueryTypes.SELECT,
       }
@@ -338,7 +350,13 @@ router.get("/tableIncludes/", async (req, res) => {
     const sp_list = await store_procedures_db.sequelize.query(
       `select routine_name as name 
       from information_schema.routines  
-      where routine_name in ('fnGetStockIdForReportPortal' , 'fnGetBlockId' , 'fnGetBlockId2') or routine_name like 'spReport%'`,
+      where routine_name in ('fnGetStockIdForReportPortal' , 'fnGetBlockId' , 'fnGetBlockId2') or routine_name like 'spReport%'
+      union all
+      SELECT 
+        v.name
+      FROM 
+        sys.views as v
+          where name like 'spReport%'`,
       {
         type: QueryTypes.SELECT,
       }
@@ -413,7 +431,13 @@ router.get("/storeList", async (req, res) => {
     const sp_list = await store_procedures_db.sequelize.query(
       `select routine_name as name 
       from information_schema.routines  
-      where routine_name in ('fnGetStockIdForReportPortal' , 'fnGetBlockId' , 'fnGetBlockId2') or routine_name like 'spReport%'`,
+      where routine_name in ('fnGetStockIdForReportPortal' , 'fnGetBlockId' , 'fnGetBlockId2') or routine_name like 'spReport%'
+      union all
+      SELECT 
+        v.name
+      FROM 
+        sys.views as v
+          where name like 'spReport%'`,
       {
         type: QueryTypes.SELECT,
       }
@@ -569,7 +593,13 @@ router.get("/compareStoreProceduresWithLastVersion/", async (req, res) => {
     const sp_list = await store_procedures_db.sequelize.query(
       `select routine_name as name 
       from information_schema.routines  
-      where routine_name in ('fnGetStockIdForReportPortal' , 'fnGetBlockId' , 'fnGetBlockId2') or routine_name like 'spReport%'`,
+      where routine_name in ('fnGetStockIdForReportPortal' , 'fnGetBlockId' , 'fnGetBlockId2') or routine_name like 'spReport%'
+      union all
+      SELECT 
+        v.name
+      FROM 
+        sys.views as v
+          where name like 'spReport%'`,
       {
         type: QueryTypes.SELECT,
       }
