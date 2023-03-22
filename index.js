@@ -10,6 +10,7 @@ app.use(express.json());
 app.use(cors());
 
 //api require module
+app.use("/api/authentication", require("./api/api_authen"));
 app.use("/api/gecko/", require("./api/api_gecko"));
 app.use("/api/storeConnection/", require("./api/api_store_connection"));
 app.use("/api/storeProcedures/", require("./api/api_store_procedures"));

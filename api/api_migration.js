@@ -56,7 +56,7 @@ router.patch("/tbExternalConnections", async (req, res) => {
     const vision_tb = new tbExternalConnections_vision(connection_vision);
 
     //create table
-    // await vision_tb.createTable(forceCreateTable ? forceCreateTable : false);
+    await vision_tb.createTable(forceCreateTable ? forceCreateTable : false);
 
     //get mantis data
     const mantis_result = await mantis_tb.table.findAll();
@@ -128,7 +128,7 @@ router.patch("/tbDatasource", async (req, res) => {
     const vision_tb = new tbDatasource_dynamic_vision(connection_vision);
 
     //create table
-    // await vision_tb.createTable(forceCreateTable ? forceCreateTable : false);
+    await vision_tb.createTable(forceCreateTable ? forceCreateTable : false);
 
     try {
       // const dropTableQuery = `DROP TABLE [dbo].[tbDatasource];`;

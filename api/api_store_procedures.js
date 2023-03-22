@@ -10,6 +10,7 @@ const moment = require("moment");
 const dynamic_connection = require("../database/connection/dynamic_connection");
 const tbStoreProceduresVersion_dynamic = require("../database/models/tbStoreProceduresVersion_dynamic");
 const tbStoreProceduresUpdate_dynamic = require("../database/models/tbStoreProcedureUpdate_dynamic");
+const { log } = require("console");
 
 router.get("/query/version=:version", async (req, res) => {
   const { version } = req.params;
@@ -207,18 +208,20 @@ router.post("/storeProcedures", async (req, res) => {
             type: QueryTypes.SELECT,
           }
         );
-
         let store_code = "";
         for (let index = 0; index < result.length; index++) {
           const item = result[index];
           store_code += item.Text;
         }
+
         store_code.trim();
         store_code = store_code.replace(/[\r]+/g, "\r");
         store_code = store_code.replace(/[\n]+/g, "\n");
         store_code = store_code.replace(/[\t]+/g, "\t");
         store_code = store_code.replace("CREATE  ", "CREATE  OR   ALTER   ");
+        store_code = store_code.replace("create  ", "CREATE  OR   ALTER   ");
         store_code = store_code.replace("Create  ", "CREATE  OR   ALTER   ");
+        store_code = store_code.replace("CREATE   ", "CREATE  OR   ALTER   ");
         store_code = store_code.replace(
           "CREATE PROCEDURE",
           "CREATE  OR   ALTER   PROCEDURE"
@@ -227,7 +230,10 @@ router.post("/storeProcedures", async (req, res) => {
           "CREATE FUNCTION",
           "CREATE  OR   ALTER   FUNCTION"
         );
-
+        store_code = store_code.replace(
+          "CREATE VIEW",
+          "CREATE  OR   ALTER   VIEW"
+        );
         tbStoreProcedures_version.createTable();
         try {
           await tbStoreProcedures_version.table.create({
@@ -242,8 +248,8 @@ router.post("/storeProcedures", async (req, res) => {
       } catch (error) {
         error_list.push(sp_name);
       }
-    }
 
+    }
     res.json({ success_list, error_list, api_result: constant.ok });
   } catch (error) {
     console.log(error);
@@ -273,7 +279,7 @@ router.delete("/storeProcedures/", async (req, res) => {
   }
 });
 
-router.patch("/storeProcedures", async (req, res) => {});
+router.patch("/storeProcedures", async (req, res) => { });
 
 router.get("/stringMatching/:text", async (req, res) => {
   try {
@@ -335,7 +341,7 @@ router.get("/stringMatching/:text", async (req, res) => {
     console.log("-------------------------------");
     res.json({ isIncludeText: inCludeText });
     // res.json(sp_list);
-  } catch (error) {}
+  } catch (error) { }
 });
 
 router.get("/tableIncludes/", async (req, res) => {
@@ -414,7 +420,7 @@ router.get("/tableIncludes/", async (req, res) => {
     console.log("-------------------------------");
     res.json(inCludeTbList);
     // res.json(sp_list);
-  } catch (error) {}
+  } catch (error) { }
 });
 
 //tbStoreProceduresUpdate
